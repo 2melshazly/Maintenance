@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2M Store | نظام الصيانة الشامل</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #0c0707; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0c0707; }
+        ::-webkit-scrollbar-thumb { background: #e61e25; border-radius: 10px; }
+    </style>
+</head>
+<body class="text-gray-100 min-h-screen">
+
+    <nav class="bg-[#170f0f] border-b-2 border-[#e61e25] sticky top-0 z-50 px-4 py-3 shadow-lg">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl font-black text-white" translate="no">2M <span class="text-[#e61e25]">Store</span></span>
+                <span class="bg-[#e61e25]/10 text-[#e61e25] text-xs font-bold px-2.5 py-1 rounded-full border border-[#e61e25]/20">نظام الـ 16 قطعة المطور 🚀</span>
+            </div>
+            <div class="flex gap-1 bg-[#0c0707] p-1 rounded-xl border border-gray-800">
+                <button onclick="switchTab('tech-tab')" id="btn-tech-tab" class="tab-btn px-4 py-2 text-sm font-bold rounded-lg bg-[#e61e25] text-white transition-all">تسجيل دراع</button>
+                <button onclick="switchTab('search-tab')" id="btn-search-tab" class="tab-btn px-4 py-2 text-sm font-bold rounded-lg text-gray-400 hover:text-white transition-all">فحص الضمان والـ QR</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <section id="tech-tab" class="tab-content block">
+            <div class="max-w-5xl mx-auto bg-[#170f0f] border border-gray-800 rounded-2xl p-6 md:p-8 shadow-2xl">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-black text-white">تسجيل صيانة الدراع 📝</h2>
+                    <p class="text-gray-400 text-sm mt-1">اختر قطع الصيانة المستبدلة وسيتم ترحيلها للشيت وتوليد الـ QR فوراً.</p>
+                </div>
+
+                <form id="maintenanceForm" onsubmit="handleFormSubmit(event)" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-300 mb-2">رقم موبيل العميل *</label>
+                            <input type="tel" id="customerPhone" required placeholder="رقم العميل (مثال: 01234567890)" class="w-full bg-[#0c0707] border border-gray-700 rounded-xl px-4 py-3 text-white font-bold tracking-wide focus:outline-none focus:border-[#e61e25]">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-300 mb-2">اسم العميل *</label>
+                            <input type="text" id="customerName" required placeholder="الاسم ثلاثي" class="w-full bg-[#0c0707] border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#e61e25]">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-300 mb-2">الفني المسؤول *</label>
+                            <select id="techEmployee" required class="w-full bg-[#0c0707] border border-gray-700 rounded-xl px-4 py-3 text-white font-bold focus:outline-none focus:border-[#e61e25]">
+                                <option value="">اختر الفني...</option>
+                                <option value="أحمد">أحمد</option>
+                                <option value="محمد">محمد</option>
+                                <option value="شاوكي">شاوكي</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="bg-[#0c0707] p-5 rounded-xl border border-gray-800">
+                        <span class="text-sm font-bold text-[#e61e25] block mb-4 border-b border-gray-800 pb-2">فحص لستة قطع الصيانة الكاملة:</span>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                            <label class="flex items-center justify-between p-3 bg-[#170f0f] border border-gray-800 rounded-xl cursor-pointer hover:border-gray-700 transition-all">
+                                <span class="text-xs font-medium text-gray-300">كاوتش-تنظيف <span class="text-gray-500">(15ج)</span></span>
+                                <input type="checkbox" id="part-rubber-clean" data-price="15" onchange="calculateTotal()" class="w-4 h-4 rounded text-[#e61e25]">
+                            </label>
+                            <label class="flex items-center justify-between p-3 bg-[#170f0f] border border-gray-800 rounded-xl cursor-pointer hover:border-gray-700 transition-all">
+                                <span class="text-xs font-medium text-gray-300">عظمة <span class="text-gray-500">(20ج)</span></span>
+                                <input type="checkbox" id="part-adma" data-price="20" onchange="calculateTotal()" class="w-4 h-4 rounded text-[#e61e25]">
+                            </label>
+                            <label class="flex items-center justify-between p-3 bg-[#170f0f] border border-gray-800 rounded-xl cursor-pointer hover:border-gray-700 transition-all">
+                                <span class="text-xs font-medium text-gray-300">سوكيت <span class="text-gray-500">(25ج)</span></span>
+                                <input type="checkbox" id="part-socket" data-price="25" onchange="calculateTotal()" class="w-4 h-4 rounded text-[#e61e25]">
+                            </label>
+                            <label class="flex items-center justify-between p-3 bg-[#170f0f] border border-gray-800 rounded-xl cursor-pointer hover:border-gray-700 transition-all">
+                                <span class="text-xs font-medium text-gray-300">شريط <span class="text-gray-500">(20ج)</span></span>
+                                <input type="checkbox" id="part-sharieta" data-price="20" onchange="calculateTotal()" class="w-4 h-4 rounded text-[#e61e25]">
+                            </label>
+                            <label class="flex items-center justify-between p-3 bg-[#170f0f] border border-gray-800 rounded-xl cursor-pointer hover:border-gray-700 transition-all">
+                                <span class="text-xs font-medium text-gray-300">كڤر وش/ضهر <span class="text-gray-500">(60ج)</span></span>
+                                <input type="checkbox" id="part-cover" data-price="60" onchange="calculateTotal()" class="w-4 h-4 rounded text-[#e61e25]">
+                            </label>
+                            <label class="flex items-center justify-between p-3 bg-[#170f0f] border border-gray-800 rounded-xl cursor-pointer hover:border-gray-700 transition-all">
+                                <span class="text-xs font-medium text-gray-300">زرار <span class="text-gray-500">(10ج)</span></span>
+                                <input type="checkbox" id="part-button" data-price="10" onchange="calculateTotal()" class="w-4 h-4 rounded text-[#e61e25]">
+                            </label>
+                            <label class="flex items-center justify-between p-3 bg-[#170f0f] border border-gray-800 rounded-xl cursor-pointer hover:border-gray-700 transition-all">
+                                <span class="text-xs font-medium text-gray-300">طربوش <span class="text-gray-500">(10ج)</span></span>
+                                <input type="checkbox" id="part-tarboush" data-price="10" onchange="calculateTotal()" class="w-4 h-4 rounded text-[#e61e25]">
+                            </label>
+                            <label class="flex items-center justify-between p-3 bg-[#170f0f] border border-gray-800 rounded-xl cursor-pointer hover:border-gray-700 transition-all">
+                                <span class="text-xs font-medium text-gray-300">شابلونة <span class="text-gray-500">(35ج)</span></span>
+                                <input type="checkbox" id="part-shablona" data-price="35" onchange="calculateTotal()" class="w-4 h-4 rounded text-[#e61e25]">
+                            </label>
+                            <label class="flex items-center justify-between p-3 bg-[#170f0f] border border-gray-800 rounded-xl cursor-pointer hover:border-gray-700 transition-all">
+                                <span class="text-xs font-medium text-gray-300">أنالوج يمين/شمال <span class="text-gray-500">(40ج)</span></span>
+                                <input type="checkbox" id="part-analog" data-price="40" onchange="calculateTotal()" class="w-4 h-4 rounded text-[#e61e25]">
+                            </label>
+                            <label class="flex items-center justify-between p-3 bg-[#170f0f] border border-gray-800 rounded-xl cursor-pointer hover:border-gray-700 transition-all">
+                                <span class="text-xs font-medium text-gray-300">بوردة تغيير/شغل <span class="text-gray-500">(100ج)</span></span>
+                                <input type="checkbox" id="part-board" data-price="100" onchange="calculateTotal()" class="w-4 h-4 rounded text-[#e61e25]">
+                            </label>
+                            <label class="flex items-center justify-between p-3 bg-[#170f0f] border border-gray-800 rounded-xl cursor-pointer hover:border-gray-700 transition-all">
+                                <span class="text-xs font-medium text-gray-300">سوستة <span class="text-gray-500">(5ج)</span></span>
+                                <input type="checkbox" id="part-sosta" data-price="5" onchange="calculateTotal()" class="w-4 h-4 rounded text-[#e61e25]">
+                            </label>
+                            <label class="flex items-center justify-between p-3 bg-[#170f0f] border border-gray-800 rounded-xl cursor-pointer hover:border-gray-700 transition-all">
+                                <span class="text-xs font-medium text-gray-300">فلاتة تاتش <span class="text-gray-500">(15ج)</span></span>
+                                <input type="checkbox" id="part-flat-touch" data-price="15" onchange="calculateTotal()" class="w-4 h-4 rounded text-[#e61e25]">
+                            </label>
+                            <label class="flex items-center justify-between p-3 bg-[#170f0f] border border-gray-800 rounded-xl cursor-pointer hover:border-gray-700 transition-all">
+                                <span class="text-xs font-medium text-gray-300">بطارية <span class="text-gray-500">(50ج)</span></span>
+                                <input type="checkbox" id="part-battery" data-price="50" onchange="calculateTotal()" class="w-4 h-4 rounded text-[#e61e25]">
+                            </label>
+                            <label class="flex items-center justify-between p-3 bg-[#170f0f] border border-gray-800 rounded-xl cursor-pointer hover:border-gray-700 transition-all">
+                                <span class="text-xs font-medium text-gray-300">start <span class="text-gray-500">(10ج)</span></span>
+                                <input type="checkbox" id="part-start" data-price="10" onchange="calculateTotal()" class="w-4 h-4 rounded text-[#e61e25]">
+                            </label>
+                            <label class="flex items-center justify-between p-3 bg-[#170f0f] border border-gray-800 rounded-xl cursor-pointer hover:border-gray-700 transition-all">
+                                <span class="text-xs font-medium text-gray-300">ic power <span class="text-gray-500">(80ج)</span></span>
+                                <input type="checkbox" id="part-ic-power" data-price="80" onchange="calculateTotal()" class="w-4 h-4 rounded text-[#e61e25]">
+                            </label>
+                            <label class="flex items-center justify-between p-3 bg-[#170f0f] border border-gray-800 rounded-xl cursor-pointer hover:border-gray-700 transition-all">
+                                <span class="text-xs font-medium text-gray-300">ic شحن <span class="text-gray-500">(70ج)</span></span>
+                                <input type="checkbox" id="part-ic-charge" data-price="70" onchange="calculateTotal()" class="w-4 h-4 rounded text-[#e61e25]">
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center bg-[#e61e25]/5 border border-[#e61e25]/20 p-4 rounded-xl">
+                        <div>
+                            <span class="text-xs text-gray-400 block">إجمالي صيانة الدراع</span>
+                            <span class="text-2xl font-black text-white"><span id="totalPrice">0</span> جنيهاً</span>
+                        </div>
+                        <button type="submit" class="bg-[#e61e25] hover:bg-[#ff333a] text-white font-bold px-8 py-3.5 rounded-xl shadow-lg transition-all">
+                            حفظ وتوليد استيكر الـ QR 🚀
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <section id="search-tab" class="tab-content hidden">
+            <div class="max-w-3xl mx-auto bg-[#170f0f] border border-gray-800 rounded-2xl p-6 md:p-8 shadow-2xl">
+                <div class="mb-6 text-center">
+                    <h2 class="text-2xl font-black text-white">لوحة فحص تاريخ الدراع 🔍</h2>
+                </div>
+                <div class="flex gap-2 max-w-md mx-auto mb-8">
+                    <input type="tel" id="searchPhone" placeholder="اكتب رقم موبيل الزبون..." class="flex-1 bg-[#0c0707] border border-gray-700 rounded-xl px-4 py-3 text-white font-bold text-center text-lg focus:outline-none focus:border-[#e61e25]">
+                    <button onclick="searchCustomerHistory()" class="bg-[#e61e25] hover:bg-[#ff333a] font-bold px-8 rounded-xl transition-all">عرض الداتا</button>
+                </div>
+                <div id="searchResult" class="hidden space-y-4"></div>
+            </div>
+        </section>
+    </main>
+
+    <div id="qrModal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4">
+        <div class="bg-[#170f0f] border border-[#e61e25] rounded-2xl p-6 max-w-sm w-full text-center space-y-4">
+            <h3 class="text-lg font-black text-white">تم الإرسال والحفظ بنجاح! ✅</h3>
+            <div id="qrcode" class="bg-white p-3 rounded-xl inline-block mx-auto"></div>
+            <div class="text-sm font-bold text-gray-300" id="qrCodeLabel"></div>
+            <div class="flex gap-2">
+                <button onclick="printQR()" class="flex-1 bg-[#e61e25] hover:bg-[#ff333a] font-bold py-2 rounded-xl transition-all">طباعة الاستيكر 🖨️</button>
+                <button onclick="closeQRModal()" class="flex-1 bg-gray-800 hover:bg-gray-700 font-bold py-2 rounded-xl transition-all">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const MASTER_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNesf9oWqIL89Azilnytgab3WHpy3Rvj-Y_Ta4_XPD6dTv3X1xjJNy8hFJDOvQx1XbNDhZWeRdR7uT/pub?output=csv"; 
+        const GOOGLE_FORM_URL = "https://script.google.com/macros/s/AKfycbzQq47qu-M2z81EVLZtR4bClFmSOD5qZTsQljPVgRDvD8yFMSzAD1_d1enXoR4lC7mpTw/exec";
+
+        let cachedLogs = [];
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('bg-[#e61e25]', 'text-white'));
+            document.getElementById('btn-' + tabId).classList.add('bg-[#e61e25]', 'text-white');
+            if(tabId === 'search-tab') { loadCSVData(); }
+        }
+
+        function calculateTotal() {
+            let total = 0;
+            document.querySelectorAll('#maintenanceForm input[type="checkbox"]').forEach(cb => {
+                if(cb.checked) total += parseInt(cb.getAttribute('data-price')) || 0;
+            });
+            document.getElementById('totalPrice').innerText = total;
+            return total;
+        }
+
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            const phone = document.getElementById('customerPhone').value.trim();
+            const name = document.getElementById('customerName').value.trim();
+            const tech = document.getElementById('techEmployee').value;
+            const dateStr = new Date().toLocaleDateString('ar-EG');
+            
+            // حساب الإجمالي الحالي لإرساله للشيت
+            const currentTotal = calculateTotal();
+
+            const formData = new FormData();
+            formData.append('phone', "'" + phone); 
+            formData.append('name', name);
+            formData.append('date', dateStr);
+            formData.append('tech', tech);
+            formData.append('total_price', currentTotal); // إرسال الإجمالي المحسوب جاهز 💰
+
+            formData.append('rubber_clean', document.getElementById('part-rubber-clean').checked ? "1" : "0");
+            formData.append('adma', document.getElementById('part-adma').checked ? "1" : "0");
+            formData.append('socket', document.getElementById('part-socket').checked ? "1" : "0");
+            formData.append('sharieta', document.getElementById('part-sharieta').checked ? "1" : "0");
+            formData.append('cover', document.getElementById('part-cover').checked ? "1" : "0");
+            formData.append('button', document.getElementById('part-button').checked ? "1" : "0");
+            formData.append('tarboush', document.getElementById('part-tarboush').checked ? "1" : "0");
+            formData.append('shablona', document.getElementById('part-shablona').checked ? "1" : "0");
+            formData.append('analog', document.getElementById('part-analog').checked ? "1" : "0");
+            formData.append('board', document.getElementById('part-board').checked ? "1" : "0");
+            formData.append('sosta', document.getElementById('part-sosta').checked ? "1" : "0");
+            formData.append('flat_touch', document.getElementById('part-flat-touch').checked ? "1" : "0");
+            formData.append('battery', document.getElementById('part-battery').checked ? "1" : "0");
+            formData.append('start_btn', document.getElementById('part-start').checked ? "1" : "0");
+            formData.append('ic_power', document.getElementById('part-ic-power').checked ? "1" : "0");
+            formData.append('ic_charge', document.getElementById('part-ic-charge').checked ? "1" : "0");
+
+            fetch(GOOGLE_FORM_URL, { method: 'POST', mode: 'no-cors', body: formData })
+            .then(() => {
+                generateQRForController(phone, name);
+                document.getElementById('maintenanceForm').reset();
+                calculateTotal();
+            })
+            .catch(err => alert("برجاء التحقق من اتصال الإنترنت وضبط إعدادات النشر."));
+        }
+
+        function generateQRForController(phone, name) {
+            document.getElementById("qrcode").innerHTML = "";
+            const scanLink = `${window.location.origin}${window.location.pathname}?search=${phone}`;
+            new QRCode(document.getElementById("qrcode"), {
+                text: scanLink, width: 120, height: 120, colorDark : "#000000", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.H
+            });
+            document.getElementById("qrCodeLabel").innerText = `${name} | ${phone}`;
+            document.getElementById("qrModal").classList.remove("hidden");
+        }
+
+        function printQR() {
+            const printContent = document.getElementById("qrcode").innerHTML;
+            const labelContent = document.getElementById("qrCodeLabel").innerText;
+            const originalContent = document.body.innerHTML;
+            document.body.innerHTML = `
+                <div style="text-align: center; width: 58px; max-width: 58px; padding: 4px; color: black; font-family: 'Cairo';">
+                    <div style="margin-bottom: 2px;">${printContent}</div>
+                    <div style="font-size: 7px; font-weight: 900;">2M Store</div>
+                    <div style="font-size: 5px; font-weight: bold; white-space: nowrap; overflow: hidden;">${labelContent}</div>
+                </div>`;
+            window.print();
+            document.body.innerHTML = originalContent;
+            window.location.reload();
+        }
+
+        function closeQRModal() { document.getElementById("qrModal").classList.add("hidden"); }
+
+        async function loadCSVData() {
+            try {
+                const res = await fetch(MASTER_CSV_URL);
+                const text = await res.text();
+                const lines = text.split(/\r?\n/);
+                cachedLogs = [];
+                for(let i = 1; i < lines.length; i++) {
+                    if(!lines[i].trim()) continue;
+                    const cols = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                    if(cols.length < 3) continue;
+                    cachedLogs.push({
+                        date: cols[0]?.replace(/"/g, '').trim(),          
+                        phone: cols[1]?.replace(/"/g, '').trim(),         
+                        name: cols[2]?.replace(/"/g, '').trim(),          
+                        techStr: cols[3]?.replace(/"/g, '').trim(),       
+                        emp: cols[4]?.replace(/"/g, '').trim(),           
+                        rubber_clean: cols[5]?.replace(/"/g, '').trim(),  
+                        adma: cols[6]?.replace(/"/g, '').trim(),          
+                        socket: cols[7]?.replace(/"/g, '').trim(),        
+                        sharieta: cols[8]?.replace(/"/g, '').trim(),
+                        cover: cols[9]?.replace(/"/g, '').trim(),         
+                        button: cols[10]?.replace(/"/g, '').trim(),        
+                        tarboush: cols[11]?.replace(/"/g, '').trim(),     
+                        shablona: cols[12]?.replace(/"/g, '').trim(),     
+                        analog: cols[13]?.replace(/"/g, '').trim(),
+                        board: cols[14]?.replace(/"/g, '').trim(),
+                        sosta: cols[15]?.replace(/"/g, '').trim(),
+                        flat_touch: cols[16]?.replace(/"/g, '').trim(),
+                        battery: cols[17]?.replace(/"/g, '').trim(),
+                        start_btn: cols[18]?.replace(/"/g, '').trim(),
+                        ic_power: cols[19]?.replace(/"/g, '').trim(),
+                        ic_charge: cols[20]?.replace(/"/g, '').trim()
+                    });
+                }
+            } catch (e) { console.error("CSV Loading Error: ", e); }
+        }
+
+        function searchCustomerHistory() {
+            const searchPhone = document.getElementById('searchPhone').value.trim();
+            const resultDiv = document.getElementById('searchResult');
+            if(!searchPhone) return;
+            const matches = cachedLogs.filter(log => String(log.phone).replace(/'/g, '') === String(searchPhone));
+            resultDiv.classList.remove('hidden');
+            if(matches.length === 0) {
+                resultDiv.innerHTML = `<div class="text-center py-6 bg-[#170f0f] border border-gray-800 rounded-xl text-amber-500 font-bold">⚠️ لا يوجد أي سجل صيانة لهذا الرقم حتى الآن.</div>`;
+                return;
+            }
+            let html = `
+                <div class="bg-[#170f0f] border border-gray-800 p-4 rounded-xl flex justify-between items-center mb-4">
+                    <div><span class="text-xs text-gray-400 block">اسم العميل</span><span class="text-lg font-black text-white">${matches[0].name}</span></div>
+                    <div class="text-left"><span class="text-xs text-gray-400 block">عدد الفواتير</span><span class="text-lg font-black text-[#e61e25]">${matches.length} صيانة</span></div>
+                </div>`;
+            matches.reverse().forEach(item => {
+                let parts = [];
+                if(item.rubber_clean && item.rubber_clean !== "0") parts.push("كاوتش-تنظيف 🧽");
+                if(item.adma && item.adma !== "0") parts.push("عظمة 🦴");
+                if(item.socket && item.socket !== "0") parts.push("سوكيت 🔌");
+                if(item.sharieta && item.sharieta !== "0") parts.push("شريط ⚡");
+                if(item.cover && item.cover !== "0") parts.push("كڤر وش/ضهر 🛡️");
+                if(item.button && item.button !== "0") parts.push("زرار 🔘");
+                if(item.tarboush && item.tarboush !== "0") parts.push("طربوش 🕹️");
+                if(item.shablona && item.shablona !== "0") parts.push("شابلونة 🛠️");
+                if(item.analog && item.analog !== "0") parts.push("أنالوج 🕹️");
+                if(item.board && item.board !== "0") parts.push("شغل بوردة ⚡");
+                if(item.sosta && item.sosta !== "0") parts.push("سوستة 🌀");
+                if(item.flat_touch && item.flat_touch !== "0") parts.push("فلاتة تاتش 📱");
+                if(item.battery && item.battery !== "0") parts.push("بطارية 🔋");
+                if(item.start_btn && item.start_btn !== "0") parts.push("start 🔘");
+                if(item.ic_power && item.ic_power !== "0") parts.push("ic power 🧠");
+                if(item.ic_charge && item.ic_charge !== "0") parts.push("ic شحن ⚡");
+                html += `
+                <div class="bg-[#170f0f] border border-gray-800 p-4 rounded-xl space-y-2 hover:border-gray-700 transition-all">
+                    <div class="flex justify-between text-xs text-gray-400"><span>الوقت: ${item.date}</span><span>الفني: ${item.emp || 'غير محدد'}</span></div>
+                    <div class="flex flex-wrap gap-1">${parts.map(p => `<span class="bg-gray-900 px-2 py-1 rounded text-xs text-gray-200 font-bold">${p}</span>`).join('') || '<span class="text-gray-500">صيانة وفحص عام</span>'}</div>
+                </div>`;
+            });
+            resultDiv.innerHTML = html;
+        }
+
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const searchPhone = urlParams.get('search');
+            if(searchPhone) {
+                switchTab('search-tab');
+                document.getElementById('searchPhone').value = searchPhone;
+                setTimeout(() => { searchCustomerHistory(); }, 1200);
+            }
+        };
+    </script>
+</body>
+</html>
